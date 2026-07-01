@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Officer Dashboard | HLMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="officer-styles.css">
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand"><div class="mark">H</div><div>HLMS<span class="sub">Officer Console</span></div></div>
+    <input class="search" id="globalSearch" placeholder="Search applicant, loan account or customer...">
+    <div class="top-right">
+      <div class="icon-btn" title="Notifications">🔔<span class="dot-badge" id="notifCount">4</span></div>
+      <div class="icon-btn" title="Messages">💬</div>
+      <div class="who">
+        <div class="avatar">PS</div>
+        <div>
+          <div class="who-name">Priya Sharma</div>
+          <div class="who-role">Senior Loan Officer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="nav-item active" data-target="sec-dashboard"><span class="ic">▦</span>Dashboard</div>
+    <div class="nav-item" data-target="sec-applications"><span class="ic">▤</span>Loan Applications<span class="nav-badge" id="navPendingBadge">5</span></div>
+    <div class="nav-item" data-target="sec-portfolio"><span class="ic">◔</span>Customer Portfolio</div>
+    <div class="nav-item" data-target="sec-disbursement"><span class="ic">$</span>Disbursement Queue</div>
+    <div class="nav-item" data-target="sec-overdue"><span class="ic">!</span>Overdue &amp; NPA Tracking</div>
+    <div class="nav-item" data-target="sec-documents"><span class="ic">◎</span>Document Verification</div>
+    <div class="nav-item" data-target="sec-auction"><span class="ic">☆</span>Auction Management</div>
+    <div class="nav-item" data-target="sec-reports"><span class="ic">✦</span>Reports &amp; Analytics</div>
+    <div class="nav-item" data-target="sec-settings"><span class="ic">◐</span>Settings</div>
+  </div>
+
+  <main>
+    <div class="page-head">
+      <h1>Loan Officer Dashboard</h1>
+      <p>Review applications, monitor your portfolio and manage disbursements &amp; recovery.</p>
+    </div>
+
+    <!-- KPI cards -->
+    <div class="stats-row">
+      <div class="card stat-card">
+        <div class="top"><span class="label">Active Loans Managed</span><span class="icon teal">▤</span></div>
+        <div class="value" id="statActive">128</div>
+        <div class="note">Across all loan types</div>
+      </div>
+      <div class="card stat-card">
+        <div class="top"><span class="label">Pending Applications</span><span class="icon amber">◷</span></div>
+        <div class="value" id="statPending">5</div>
+        <div class="note">Awaiting your review</div>
+      </div>
+      <div class="card stat-card">
+        <div class="top"><span class="label">Overdue Accounts</span><span class="icon red">!</span></div>
+        <div class="value" id="statOverdue">3</div>
+        <div class="note">Needs follow-up action</div>
+      </div>
+      <div class="card stat-card">
+        <div class="top"><span class="label">Today's Collections</span><span class="icon green">₹</span></div>
+        <div class="value" id="statCollections">₹2,84,500</div>
+        <div class="note">12 EMIs cleared today</div>
+      </div>
+    </div>
+
+    <!-- Loan Applications -->
+    <section id="sec-applications">
+      <div class="section-title">
+        <h2><span class="dot"></span>Loan Applications Queue</h2>
+        <div class="filter-group">
+          <select id="appFilter">
+            <option value="all">All statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+      <div class="card panel">
+        <div class="scroll-table">
+          <table>
+            <thead>
+              <tr><th>Applicant</th><th>Loan Type</th><th>Amount</th><th>Submitted</th><th>Credit Score</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="applicationsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customer Portfolio -->
+    <section id="sec-portfolio">
+      <div class="section-title">
+        <h2><span class="dot"></span>Customer Portfolio</h2>
+        <span class="story" id="portfolioCount">— accounts</span>
+      </div>
+      <div class="card panel">
+        <div class="scroll-table">
+          <table>
+            <thead>
+              <tr><th>Loan Account</th><th>Customer</th><th>Loan Type</th><th>Outstanding</th><th>Next EMI Due</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody id="portfolioBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Disbursement Queue -->
+    <section id="sec-disbursement">
+      <div class="section-title">
+        <h2><span class="dot"></span>Disbursement Queue</h2>
+        <span class="story">Post-approval, pre-disbursement</span>
+      </div>
+      <div class="card panel">
+        <div class="scroll-table">
+          <table>
+            <thead>
+              <tr><th>Applicant</th><th>Loan Amount</th><th>Legal Verification</th><th>Property Valuation</th><th>Ready to Disburse</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="disbursementBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overdue Tracking -->
+    <section id="sec-overdue">
+      <div class="section-title">
+        <h2><span class="dot"></span>Overdue &amp; NPA Tracking</h2>
+        <span class="story">Sorted by days overdue</span>
+      </div>
+      <div class="card panel">
+        <div class="scroll-table">
+          <table>
+            <thead>
+              <tr><th>Loan Account</th><th>Customer</th><th>Amount Due</th><th>Days Overdue</th><th>Risk</th><th>Last Contacted</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="overdueBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Document Verification -->
+    <section id="sec-documents">
+      <div class="section-title">
+        <h2><span class="dot"></span>Document Verification</h2>
+        <span class="story">Pending uploads from customers</span>
+      </div>
+      <div class="card panel">
+        <div class="scroll-table">
+          <table>
+            <thead>
+              <tr><th>Applicant</th><th>Document</th><th>Uploaded On</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="documentsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick actions / Reports / Settings placeholders -->
+    <section id="sec-auction">
+      <div class="section-title"><h2><span class="dot"></span>Auction Management</h2></div>
+      <div class="card panel placeholder-panel">
+        <p>Properties under recovery auction will be listed here once accounts move to NPA status.</p>
+      </div>
+    </section>
+
+    <section id="sec-reports">
+      <div class="section-title"><h2><span class="dot"></span>Reports &amp; Analytics</h2></div>
+      <div class="card panel placeholder-panel">
+        <p>Generate portfolio health, collection efficiency and overdue trend reports.</p>
+        <button class="btn primary" id="genReportBtn">Generate Monthly Report</button>
+      </div>
+    </section>
+
+    <section id="sec-settings">
+      <div class="section-title"><h2><span class="dot"></span>Settings</h2></div>
+      <div class="card panel placeholder-panel">
+        <div class="toggle-row">
+          <div>
+            <div class="t-label">Email me on new applications</div>
+            <div class="t-sub">Receive a notification whenever a customer submits a new loan application.</div>
+          </div>
+          <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="t-label">Auto-flag accounts 30+ days overdue</div>
+            <div class="t-sub">Automatically escalate to the recovery queue.</div>
+          </div>
+          <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+      </div>
+    </section>
+
+    <footer class="note">HLMS Officer Console · Logged in as Priya Sharma (Senior Loan Officer)</footer>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="officer-script.js"></script>
+</body>
+</html>
